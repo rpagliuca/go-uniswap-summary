@@ -1,9 +1,7 @@
 package unisummary
 
 import (
-	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"math"
 	"net/http"
 	"strconv"
@@ -123,74 +121,6 @@ func daysSince(start time.Time) float64 {
 	return end.Sub(start).Hours() / 24.0
 }
 
-func getBalance(us UniswapSummaryRequest, tokenAddress string, walletAddress string) string {
-	endpoint := fmt.Sprintf(us.EtherscanBalanceEndpoint, us.EtherscanApiKey, tokenAddress, walletAddress)
-	result := getResult(endpoint)
-	return result
-}
-
-func getSupply(us UniswapSummaryRequest, tokenAddress string) string {
-	endpoint := fmt.Sprintf(us.EtherscanSupplyEndpoint, us.EtherscanApiKey, tokenAddress)
-	result := getResult(endpoint)
-	return result
-}
-
-func getResult(endpoint string) string {
-	attempts := 0
-	var result string
-	for {
-		throttleRequest()
-		log(fmt.Sprintf("Fetching endpoint %s...", endpoint))
-		resp, err := client.Get(endpoint)
-		handleError(err)
-		body, err := ioutil.ReadAll(resp.Body)
-		handleError(err)
-		var data map[string]string
-		err = json.Unmarshal(body, &data)
-		handleError(err)
-		if status, ok := data["status"]; ok && status != "1" {
-			if shouldRetry(attempts) {
-				attempts++
-				continue
-			}
-			panic(fmt.Sprintf("Status for endpoint %s should be 1", endpoint))
-		}
-		if _, ok := data["result"]; !ok {
-			if shouldRetry(attempts) {
-				attempts++
-				continue
-			}
-			panic(fmt.Sprintf("Expecting property `result` for endpoint %s", endpoint))
-		}
-		result = data["result"]
-		break
-	}
-	return result
-}
-
-var LAST_FAILURE_TIME = int64(0)
-var THROTTLE_DURATION = 1500 * time.Millisecond
-var MAX_ATTEMPTS = 3
-
-func throttleRequest() {
-	ellapsed := time.Now().UnixNano() - LAST_FAILURE_TIME
-	left := THROTTLE_DURATION - time.Duration(ellapsed)
-	if left < 0 {
-		return
-	}
-	log(fmt.Sprintf("Sleeping for %s nanoseconds...", left))
-	time.Sleep(time.Duration(left) * time.Nanosecond)
-	log("Finished sleeping...")
-}
-
-func shouldRetry(attempts int) bool {
-	LAST_FAILURE_TIME = time.Now().UnixNano()
-	if attempts < MAX_ATTEMPTS {
-		return true
-	}
-	return false
-}
-
 func handleError(err error) {
 	if err != nil {
 		panic(err)
@@ -204,7 +134,7 @@ func parseTokenQuantity(quantity string, decimals int) float64 {
 }
 
 func log(i ...interface{}) {
-	if false {
+	if true {
 		fmt.Println(i...)
 	}
 }

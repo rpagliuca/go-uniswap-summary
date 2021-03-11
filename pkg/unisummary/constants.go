@@ -2,6 +2,9 @@ package unisummary
 
 const ETHERSCAN_ENDPOINT_SUPPLY = "https://api.etherscan.io/api?module=stats&apikey=%s&action=tokensupply&contractaddress=%s"
 const ETHERSCAN_ENDPOINT_BALANCE = "https://api.etherscan.io/api?module=account&apikey=%s&action=tokenbalance&contractaddress=%s&address=%s&tag=latest"
+const ETHERSCAN_WALLET_ERC20_TRANSACTIONS = "https://api.etherscan.io/api?module=account&apikey=%s&action=tokentx&address=%s&startblock=0&endblock=999999999&sort=asc"
+const ETHERSCAN_WALLET_NORMAL_TRANSACTIONS = "https://api.etherscan.io/api?module=account&apikey=%s&action=txlist&address=%s&startblock=0&endblock=99999999&sort=asc"
+const ETHERSCAN_WALLET_INTERNAL_TRANSACTIONS = "https://api.etherscan.io/api?module=account&apikey=%s&action=txlistinternal&address=%s&startblock=0&endblock=99999999&sort=asc"
 
 var TOKEN_DAI = Token{"DAI", "0x6b175474e89094c44da98b954eedeac495271d0f", 18}
 var TOKEN_WETH = Token{"WETH", "0xc02aaa39b223fe8d0a0e5c4f27ead9083c756cc2", 18}
