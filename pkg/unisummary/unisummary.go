@@ -10,20 +10,26 @@ import (
 )
 
 type UniswapSummaryRequest struct {
-	EtherscanApiKey          string
-	EtherscanSupplyEndpoint  string
-	EtherscanBalanceEndpoint string
-	UserAddress              string
-	LiquidityProviderTokens  []LiquidityProviderPosition
+	EtherscanApiKey                       string
+	EtherscanSupplyEndpoint               string
+	EtherscanBalanceEndpoint              string
+	EtherscanNormalTransactionsEndpoint   string
+	EtherscanTokenTransactionsEndpoint    string
+	EtherscanInternalTransactionsEndpoint string
+	UserAddress                           string
+	LiquidityProviderTokens               []LiquidityProviderPosition
 }
 
 func NewUniswapSummaryRequest(key string, userAddress string, lpTokens []LiquidityProviderPosition) *UniswapSummaryRequest {
 	return &UniswapSummaryRequest{
-		EtherscanApiKey:          key,
-		EtherscanSupplyEndpoint:  ETHERSCAN_ENDPOINT_SUPPLY,
-		EtherscanBalanceEndpoint: ETHERSCAN_ENDPOINT_BALANCE,
-		UserAddress:              userAddress,
-		LiquidityProviderTokens:  lpTokens,
+		EtherscanApiKey:                       key,
+		EtherscanSupplyEndpoint:               ETHERSCAN_ENDPOINT_SUPPLY,
+		EtherscanBalanceEndpoint:              ETHERSCAN_ENDPOINT_BALANCE,
+		EtherscanNormalTransactionsEndpoint:   ETHERSCAN_WALLET_NORMAL_TRANSACTIONS,
+		EtherscanInternalTransactionsEndpoint: ETHERSCAN_WALLET_INTERNAL_TRANSACTIONS,
+		EtherscanTokenTransactionsEndpoint:    ETHERSCAN_WALLET_ERC20_TRANSACTIONS,
+		UserAddress:                           userAddress,
+		LiquidityProviderTokens:               lpTokens,
 	}
 }
 

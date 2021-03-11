@@ -21,19 +21,34 @@ func getSupply(us UniswapSummaryRequest, tokenAddress string) string {
 }
 
 func getResult(endpoint string) string {
+	responseBody := callEndpoint(endpoint)
+	var stringResult StringResult
+	err := json.Unmarshal([]byte(responseBody), &stringResult)
+	handleError(err)
+	return stringResult.Result
+}
+
+type StringResult struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+	Result  string `json:"result"`
+}
+
+func callEndpoint(endpoint string) string {
 	attempts := 0
-	var result string
+	var body string
 	for {
 		throttleRequest(attempts)
 		log(fmt.Sprintf("Fetching endpoint %s...", endpoint))
 		resp, err := client.Get(endpoint)
 		handleError(err)
-		body, err := ioutil.ReadAll(resp.Body)
+		bodyBytes, err := ioutil.ReadAll(resp.Body)
+		body = string(bodyBytes)
 		handleError(err)
-		var data map[string]string
-		err = json.Unmarshal(body, &data)
+		var data map[string]interface{}
+		err = json.Unmarshal(bodyBytes, &data)
 		handleError(err)
-		if status, ok := data["status"]; ok && status != "1" {
+		if status, ok := data["status"].(string); ok && status != "1" {
 			if shouldRetry(attempts) {
 				attempts++
 				continue
@@ -47,10 +62,9 @@ func getResult(endpoint string) string {
 			}
 			panic(fmt.Sprintf("Expecting property `result` for endpoint %s", endpoint))
 		}
-		result = data["result"]
 		break
 	}
-	return result
+	return body
 }
 
 var LAST_FAILURE_TIME = int64(0)
