@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"time"
 
 	us "github.com/rpagliuca/go-uniswap-summary/pkg/unisummary"
 )
@@ -19,19 +18,17 @@ func main() {
 		os.Exit(1)
 	}
 
-	utc := time.FixedZone("UTC", 0)
-	liquidityProviderTokens := []us.LiquidityProviderPosition{
-		{us.TOKEN_DAI_WETH_LP, us.TOKEN_DAI, 100, us.TOKEN_WETH, 0.075, time.Date(2021, 1, 28, 18, 29, 0, 0, utc)},
-		{us.TOKEN_DAI_USDC_LP, us.TOKEN_DAI, 100, us.TOKEN_USDC, 100, time.Date(2021, 1, 26, 12, 12, 0, 0, utc)},
-	}
-
 	req := us.NewUniswapSummaryRequest(
 		etherscanApiKey,
 		userAddress,
-		liquidityProviderTokens,
+		[]us.LiquidityProviderPosition{},
 	)
 
+	req.LiquidityProviderTokens = us.FromWalletAddress(req)
+
 	resp := req.Do()
+
+	fmt.Printf("%+v\n", resp)
 
 	jsonBytes, err := json.MarshalIndent(resp, "", "    ")
 	handleError(err)

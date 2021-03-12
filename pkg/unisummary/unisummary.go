@@ -91,9 +91,9 @@ func (us UniswapSummaryRequest) Do() []UniswapSummaryResponse {
 			wg2.Add(1)
 			go func() {
 				if thisT.PairQuantity != 0 {
-					balance = parseTokenQuantity(getBalance(us, thisT.Pair.Address, us.UserAddress), thisT.Pair.Decimals)
-				} else {
 					balance = thisT.PairQuantity
+				} else {
+					balance = parseTokenQuantity(getBalance(us, thisT.Pair.Address, us.UserAddress), thisT.Pair.Decimals)
 				}
 				wg2.Done()
 			}()
@@ -145,7 +145,7 @@ func parseTokenQuantity(quantity string, decimals int) float64 {
 }
 
 func log(i ...interface{}) {
-	if false {
+	if true {
 		fmt.Println(i...)
 	}
 }
@@ -169,6 +169,9 @@ func makeResponse(thisT LiquidityProviderPosition, balance, supply, liquidity1, 
 	daysEllapsed := daysSince(thisT.InitialDate)
 	yearlyProfit := (math.Pow(1.0+accruedProfit/100.0, 365.0/daysEllapsed) - 1.0) * 100.0
 
+	// Is this a positive or negative position?
+	signal := math.Abs(balance) / balance
+
 	response := UniswapSummaryResponse{
 		Token:               thisT,
 		Balance:             balance,
@@ -182,13 +185,13 @@ func makeResponse(thisT LiquidityProviderPosition, balance, supply, liquidity1, 
 		Token2Increase:      token2FinalQuantity - thisT.Token2InitialQuantity,
 		InitialPrice:        initialPrice,
 		FinalPrice:          finalPrice,
-		DivergenceLoss:      divergenceLoss,
-		AccruedProfit:       accruedProfit,
+		DivergenceLoss:      divergenceLoss * signal,
+		AccruedProfit:       accruedProfit * signal,
 		DaysEllapsed:        daysEllapsed,
-		YearlyProfit:        yearlyProfit,
+		YearlyProfit:        yearlyProfit * signal,
 		Token1Fee:           token1Fee,
 		Token2Fee:           token2Fee,
-		PercentageFees:      percentageFees,
+		PercentageFees:      percentageFees * signal,
 		RatioK:              ratioK,
 		MyK:                 myK,
 		TotalK:              totalK,
