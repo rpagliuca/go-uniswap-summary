@@ -68,8 +68,8 @@ func callEndpoint(endpoint string) string {
 }
 
 var LAST_FAILURE_TIME = int64(0)
-var THROTTLE_DURATION = 1000 * time.Millisecond
-var MAX_ATTEMPTS = 3
+var THROTTLE_DURATION = 250 * time.Millisecond
+var MAX_ATTEMPTS = 5
 
 func throttleRequest(attempts int) {
 	ellapsed := time.Now().UnixNano() - LAST_FAILURE_TIME
