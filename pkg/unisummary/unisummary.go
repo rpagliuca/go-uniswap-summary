@@ -90,7 +90,11 @@ func (us UniswapSummaryRequest) Do() []UniswapSummaryResponse {
 
 			wg2.Add(1)
 			go func() {
-				balance = parseTokenQuantity(getBalance(us, thisT.Pair.Address, us.UserAddress), thisT.Pair.Decimals)
+				if thisT.PairQuantity != 0 {
+					balance = parseTokenQuantity(getBalance(us, thisT.Pair.Address, us.UserAddress), thisT.Pair.Decimals)
+				} else {
+					balance = thisT.PairQuantity
+				}
 				wg2.Done()
 			}()
 
@@ -141,7 +145,7 @@ func parseTokenQuantity(quantity string, decimals int) float64 {
 }
 
 func log(i ...interface{}) {
-	if true {
+	if false {
 		fmt.Println(i...)
 	}
 }

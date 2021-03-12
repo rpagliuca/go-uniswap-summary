@@ -24,7 +24,9 @@ func main() {
 		[]us.LiquidityProviderPosition{},
 	)
 
-	resp := us.FromWalletAddress(req)
+	req.LiquidityProviderTokens = us.FromWalletAddress(req)
+
+	resp := req.Do()
 
 	jsonBytes, err := json.MarshalIndent(resp, "", "    ")
 	handleError(err)
