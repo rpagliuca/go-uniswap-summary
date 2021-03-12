@@ -44,6 +44,7 @@ type Token struct {
 
 type LiquidityProviderPosition struct {
 	Pair                  Token
+	PairQuantity          float64
 	Token1                Token
 	Token1InitialQuantity float64
 	Token2                Token

@@ -63,7 +63,7 @@ type EtherscanNormalTransactionsResponse struct {
 		Gas               string `json:"gas"`
 		GasPrice          string `json:"gasPrice"`
 		IsError           string `json:"isError"`
-		Txreceipt_status  string `json:"txreceipt_status"`
+		TxReceiptStatus   string `json:"txreceipt_status"`
 		Input             string `json:"input"`
 		ContractAddress   string `json:"contractAddress"`
 		CumulativeGasUsed string `json:"cumulativeGasUsed"`
