@@ -165,7 +165,7 @@ func makeResponse(thisT LiquidityProviderPosition, balance, supply, liquidity1, 
 	finalPrice := token1FinalQuantity / token2FinalQuantity
 	priceRatio := finalPrice / initialPrice
 	divergenceLoss := (2.0*math.Sqrt(priceRatio)/(1.0+priceRatio) - 1.0) * 100.0
-	accruedProfit := percentageFees + divergenceLoss
+	accruedProfit := ((1.0+percentageFees/100.0)*(1.0+divergenceLoss/100.0) - 1.0) * 100.0
 	daysEllapsed := daysSince(thisT.InitialDate)
 	yearlyProfit := (math.Pow(1.0+accruedProfit/100.0, 365.0/daysEllapsed) - 1.0) * 100.0
 
